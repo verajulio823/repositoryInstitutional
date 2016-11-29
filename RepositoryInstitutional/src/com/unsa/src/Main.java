@@ -52,6 +52,7 @@ public class Main {
 		data.setSource("Universidad Nacional de san Agustin");
 		data.setSubject("machine learning, deep learning");
 		data.setTitle("Sistema de recomendación");
+		data.setType("tipo 1");
 		
 		Metadata data1 = new Metadata();
 		data1.setAuthor("Jhon");
@@ -65,6 +66,8 @@ public class Main {
 		data1.setSource("Universidad Nacional de san Agustin");
 		data1.setSubject("machine learning, deep learning");
 		data1.setTitle("Sistema de recomendación 2");
+		data1.setType("tipo 2");
+		
 		
 		list.add(data);
 		list.add(data1);

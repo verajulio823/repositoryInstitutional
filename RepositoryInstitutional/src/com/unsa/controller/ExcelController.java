@@ -27,10 +27,13 @@ public class ExcelController {
 	
 	public ExcelController(String nameFile, String nameInstitution, List<Metadata> listMetaData) throws IOException {
 		// TODO Auto-generated constructor stubno
-		this.listMetadata = listMetadata;
+		this.listMetadata = listMetaData;
 		this.path = nameFile;
 		this.nameInstitution = nameInstitution;
 		
+		for (int i = 0; i < listMetaData.size(); i++) {
+			System.out.println("METADATA: "+ this.listMetadata.get(i).getAuthor());
+		}
 		writeXLSXFile();
 		
 	}
@@ -53,18 +56,18 @@ public class ExcelController {
 				
 		//		XSSFCell cell0 = row.createCell(0);			
 		//		cell0.setCellValue(listMetadata.get(i).getAuthor());
-				setRowData(row, i, listMetadata.get(i).getAuthor());
-				setRowData(row, i, listMetadata.get(i).getCreator());
-				setRowData(row, i, listMetadata.get(i).getIssued());
-				setRowData(row, i, listMetadata.get(i).getAbstract_doc());
-				setRowData(row, i, listMetadata.get(i).getOther());
-				setRowData(row, i, listMetadata.get(i).getDescription());
-				setRowData(row, i, listMetadata.get(i).getSource());
-				setRowData(row, i, listMetadata.get(i).getTitle());
-				setRowData(row, i, listMetadata.get(i).getPublisher());
-				setRowData(row, i, listMetadata.get(i).getType());
-				setRowData(row, i, listMetadata.get(i).getLanguage_iso());
-				setRowData(row, i, listMetadata.get(i).getSubject());				
+				setRowData(row, 0, listMetadata.get(i).getAuthor());
+				setRowData(row, 1, listMetadata.get(i).getCreator());
+				setRowData(row, 2, listMetadata.get(i).getIssued());
+				setRowData(row, 3, listMetadata.get(i).getAbstract_doc());
+				setRowData(row, 4, listMetadata.get(i).getOther());
+				setRowData(row, 5, listMetadata.get(i).getDescription());
+				setRowData(row, 6, listMetadata.get(i).getSource());
+				setRowData(row, 7, listMetadata.get(i).getTitle());
+				setRowData(row, 8, listMetadata.get(i).getPublisher());
+				setRowData(row, 9, listMetadata.get(i).getType());
+				setRowData(row, 10, listMetadata.get(i).getLanguage_iso());
+				setRowData(row, 11, listMetadata.get(i).getSubject());				
 		}
 
 		FileOutputStream fileOut = new FileOutputStream(excelFileName);
