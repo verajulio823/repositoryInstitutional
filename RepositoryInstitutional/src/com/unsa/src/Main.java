@@ -13,6 +13,7 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
+import com.unsa.controller.AlgorithmsController;
 import com.unsa.controller.ExcelController;
 import com.unsa.controller.PdfBoxController;
 import com.unsa.entity.Metadata;
@@ -22,11 +23,38 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		
-		String path = "/home/pc-vera/Documentos/OCRUNSA/ocr-bci/B2-C-1660-1.pdf";
+		String pathComplete = "/home/pc-vera/Documentos/OCRUNSA/ocr-bci/";
+		File folder = new File(pathComplete);
+		File[] listOfFiles = folder.listFiles();
+		
+		for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		        //System.out.println(file.getName());
+		    	PdfBoxController pdf = new PdfBoxController(pathComplete+file.getName());
+				//System.out.println(pdf.getResultText());
+				
+				AlgorithmsController alg = new AlgorithmsController(pdf.getResultText());
+				
+				System.out.println(alg.getDescription());
+			
+		    	
+		    	
+		    }
+		}
+		
+		
+		
+		
+	/*	
+		String path = "/home/pc-vera/Documentos/OCRUNSA/ocr-bci/M-33469.pdf";
 		System.out.println("Bale Berga la Bida");
 		
 		PdfBoxController pdf = new PdfBoxController(path);
 		System.out.println(pdf.getResultText());
+		
+		AlgorithmsController alg = new AlgorithmsController(pdf.getResultText());
+		
+		System.out.println(alg.getDescription());
 		
 		List<Metadata> listMetaData = new ArrayList<Metadata>();		
 		
@@ -34,6 +62,8 @@ public class Main {
 		String name = "/home/pc-vera/metadata.xlsx";
 		
 		ExcelController excel = new ExcelController(name, "UNSA", listMetaData);
+		
+		*/
 		
 	}
 	
