@@ -15,6 +15,9 @@ public class Metadata {
 	private String language_iso;
 	private String subject;	
 	
+	public  Metadata(){
+		
+	}
 	
 	public String getAuthor() {
 		return author;

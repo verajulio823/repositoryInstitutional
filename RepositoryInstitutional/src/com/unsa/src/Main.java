@@ -46,9 +46,11 @@ public class Main {
 		    		break;
 		    	}
 		    	*/
+		    	String[] sl = file.getName().split("\\.");
+		    	System.out.println(sl[1]);
 		    	
-		        String name_file=file.getName().substring(0,file.getName().length()-4);
-		        System.out.println("File: "+count+" name:" +name_file);
+		       // String name_file=file.getName().substring(0,file.getName().length()-4);
+		        //System.out.println("File: "+count+" name:" +name_file);
 		        
 		    	PdfBoxController pdf = new PdfBoxController(pathComplete+file.getName());
 				AlgorithmsController alg = new AlgorithmsController(pdf.getText(1,1));
