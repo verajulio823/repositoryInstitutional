@@ -96,7 +96,7 @@ public class AlgorithmsWord {
 			}
 			
 		}
-		return null;
+		return "";
 	}
 	
 	public boolean verifySpecialization(String s){

@@ -575,7 +575,12 @@ public class MainView extends javax.swing.JFrame {
 			    		String saaa=saa.replaceAll("_", "").trim();
 			    		v_autores+=saaa+" //";			    		
 			    	}
-			    	na=v_autores.substring(0, v_autores.length()-2).trim();
+			    	if(!v_autores.equals("")){
+			    		if(v_autores.length()>3){
+			    			na=v_autores.substring(0, v_autores.length()-2).trim();	
+			    		}			    		
+			    	}
+			    	
 		    	}		    	
 		    	
 		    	
