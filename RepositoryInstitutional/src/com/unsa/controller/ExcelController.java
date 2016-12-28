@@ -115,7 +115,7 @@ public class ExcelController {
 
 		XSSFCell cell = row.createCell(index);	
 		if(value.equals(null) || value.equals("")){
-			if(index==0 || index ==4){
+			if(index==1 || index ==5){
 				cell.setCellValue(value);
 			}else{
 				cell.setCellStyle(styleR);
