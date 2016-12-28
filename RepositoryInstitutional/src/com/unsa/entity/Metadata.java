@@ -15,6 +15,7 @@ public class Metadata {
 	private String language_iso;
 	private String subject;	
 	private String escuela;
+	private String fileName;
 	
 	private Estadistica stadistic;
 	
@@ -119,6 +120,15 @@ public class Metadata {
 	public boolean getFailGeneral(){
 		return abstract_doc.equals("Fail") || title.equals("Fail") || subject.equals("Fail") || creator.equals("Fail") || description.equals("Fail") || issued.equals("Fail")? true:false;
 	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
 	
 
 }

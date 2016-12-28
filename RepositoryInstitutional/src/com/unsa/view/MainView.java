@@ -545,8 +545,6 @@ public class MainView extends javax.swing.JFrame {
     	int count =0;
     	
     	
-    	
-    	
     	for (File file : listOfFiles) {
     		boolean archivo_daniado= false;
 		    if (file.isFile()) {
@@ -559,7 +557,7 @@ public class MainView extends javax.swing.JFrame {
 		    	        alg = new AlgorithmsWord(doc.getParagraphs());
 		    	        
 		    	    } catch (Exception e) {
-		    	        //e.printStackTrace();
+		    	   
 		    	    	archivo_daniado=true;
 		    	    }
 		    	} else { //is not a docx
@@ -587,7 +585,7 @@ public class MainView extends javax.swing.JFrame {
 		    	}else{
 		    		metadata=loadMetadata(alg);
 		    	}
-		    	
+		    	metadata.setFileName(file.getName());
 		    	listMetaData.add(metadata);    	
 		    	int val_calculate = (count+1)*100/listOfFiles.length;
 				jProgressBar1.setValue(val_calculate);
