@@ -5,44 +5,88 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
+//import org.apache.lucene.util.automaton.SortedIntSet.FrozenIntSet;
+import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 
+import com.unsa.entity.Estadistica;
 import com.unsa.entity.Facultad;
 import com.unsa.model.ConnectionManager;
 
 
 public class AlgorithmsWord {
 	String parrafo;
-	List<XWPFParagraph> paragraphs;
+	//public Estadistica stadistic = new Estadistica();
+	//List<XWPFParagraph> paragraphs;
+	List<MyParagraph> paragraphs;
+	
 	int posicionParrafo=0;
 	int NUM_PARRAFO_PROMEDIO=35;
 	int NUM_INICIO_TESIS=15;
 	int NUM_PAGE_DEFAULT= 17;
 	
+	
 	public AlgorithmsWord(List<XWPFParagraph> paragraphs) {
 		// TODO Auto-generated constructor stub
-		this.paragraphs=paragraphs;
+		this.paragraphs = new ArrayList<MyParagraph>();
+		for (int i = 0; i < paragraphs.size(); i++) {
+			MyParagraph myp = new MyParagraph();
+			myp.setText(paragraphs.get(i).getText());
+			this.paragraphs.add(myp);
+		}
+		
+		//this.paragraphs=paragraphs;
 	}
+	public AlgorithmsWord(Range r){
+		this.paragraphs = new ArrayList<MyParagraph>();
+		
+		for (int i = 0; i < r.numParagraphs(); i++) {
+			MyParagraph myp = new MyParagraph();
+			myp.setText(r.getParagraph(i).text());
+			this.paragraphs.add(myp);
+		}
+		
+	}
+
 
 	
 	public String getTitle(){
-		for(int i=0; i<paragraphs.size(); i++){
+		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
 			int index = paragraphs.get(i).getText().toLowerCase().indexOf("facultad");
 			if(index!=-1){
 				
 				for(int j=i+1; j< paragraphs.size(); j++){
 					if(!paragraphs.get(j).getText().trim().equals("")){
 						int index2= paragraphs.get(j).getText().toLowerCase().indexOf("escuela");
-						if(index2!=-1){
+						if(index2!=-1){							
 				
 							for(int k=j+1; k<paragraphs.size(); k++){
 								if(!paragraphs.get(k).getText().trim().equals("")){
+									
+									if(verifySpecialization(paragraphs.get(k).getText())){
+										for(int l=k+1; l<paragraphs.size(); l++){
+											if(!paragraphs.get(l).getText().trim().equals("")){
+												posicionParrafo =l;
+												return paragraphs.get(l).getText();
+											}
+										}
+									}
+									
 									posicionParrafo =k;
 									return paragraphs.get(k).getText();
 								}
 							}
 							
 						}else{
+							if(verifySpecialization(paragraphs.get(j).getText())){
+								for(int k=j+1; k<paragraphs.size(); k++){
+									if(!paragraphs.get(k).getText().trim().equals("")){
+										posicionParrafo =k;
+										return paragraphs.get(k).getText();
+									}
+								}
+							}
 							posicionParrafo=j;
 							return paragraphs.get(j).getText();
 						}
@@ -53,6 +97,20 @@ public class AlgorithmsWord {
 			
 		}
 		return null;
+	}
+	
+	public boolean verifySpecialization(String s){
+		int uni = s.toLowerCase().indexOf("unidad de");
+		int esp = s.toLowerCase().indexOf("especialidad");
+		int post = s.toLowerCase().indexOf("postgrado");
+		int postg = s.toLowerCase().indexOf("post-grado");
+		if(uni!=-1){
+			if(esp!=-1 || post !=-1 || postg !=-1){
+				return true;
+			}
+		}
+			return false;
+		
 	}
 	
 	public String getIssued(){
@@ -67,7 +125,7 @@ public class AlgorithmsWord {
 			}			
 		}
 		
-		return null;
+		return "";
 	}
 	
 	public List<String> getCreator(){
@@ -149,7 +207,7 @@ public class AlgorithmsWord {
 				return fac;				
 			}
 		}
-		return null;
+		return "";
 	}
 	
 	public String getDescriptionOptional(){
@@ -161,7 +219,7 @@ public class AlgorithmsWord {
 				return valor;				
 			}
 		}
-		return null;		
+		return "";		
 	}
 	
 	public String getSchool(){
@@ -171,7 +229,7 @@ public class AlgorithmsWord {
 				return paragraphs.get(i).getText();				
 			}
 		}
-		return null;
+		return "";
 	}
 	
 	public String getAbstract(){

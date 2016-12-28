@@ -14,6 +14,9 @@ public class Metadata {
 	private String type;
 	private String language_iso;
 	private String subject;	
+	private String escuela;
+	
+	private Estadistica stadistic;
 	
 	public  Metadata(){
 		
@@ -91,8 +94,27 @@ public class Metadata {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+
+	public Estadistica getStadistic() {
+		return stadistic;
+	}
+
+	public void setStadistic(Estadistica stadistic) {
+		this.stadistic = stadistic;
+	}
+
+	public String getEscuela() {
+		return escuela;
+	}
+
+	public void setEscuela(String escuela) {
+		this.escuela = escuela;
+	}
 	
 	
+	public boolean getObservacionGeneral(){
+		return abstract_doc.equals("") || title.equals("") || subject.equals("") || creator.equals("") || description.equals("") || issued.equals("")? true:false;
+	}
 	
 
 }

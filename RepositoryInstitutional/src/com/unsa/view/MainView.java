@@ -5,25 +5,52 @@
  */
 package com.unsa.view;
 
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Component;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.CellRendererPane;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import com.unsa.controller.AlgorithmsWord;
+import com.unsa.controller.ExcelController;
+import com.unsa.entity.Estadistica;
+import com.unsa.entity.Metadata;
+import com.unsa.model.ConnectionManager;
+import com.unsa.src.MyJTable;
 
 /**
  *
  * @author pc-vera
  */
 public class MainView extends javax.swing.JFrame {
-
+	JFileChooser file=null;
+	AlgorithmsWord alg = null;
+	List<Metadata> listMetaData = new ArrayList<Metadata>();
     /**
      * Creates new form MainView
      */
     public MainView() {
+    	//ConnectionManager.GetConnection();
         initComponents();
     }
 
@@ -51,6 +78,7 @@ public class MainView extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         scroll = new javax.swing.JScrollPane();
         tableSalida = new javax.swing.JTable();
+        //tableSalida = new MyJTable();
         jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
@@ -93,7 +121,15 @@ public class MainView extends javax.swing.JFrame {
         btnProcesar.setEnabled(false);
         btnProcesar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProcesarActionPerformed(evt);
+                try {
+					btnProcesarActionPerformed(evt);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -195,6 +231,32 @@ public class MainView extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        
+        tableSalida.addMouseListener(new java.awt.event.MouseAdapter() {
+        	
+        	
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            	File[] files =file.getSelectedFiles();
+            	
+            	
+                int row = tableSalida.rowAtPoint(evt.getPoint());
+                int col = tableSalida.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col >= 0) {
+                    //System.out.println("Click en row: "+row+" col: "+col);
+                	if(col==3){
+                		int reply = JOptionPane.showConfirmDialog(null, "Desea abrir el archivo "+ 
+                				tableSalida.getModel().getValueAt(row, 0)+" ?", "Abrir", JOptionPane.YES_NO_OPTION);
+                	    if (reply == JOptionPane.YES_OPTION)
+                	    {
+                	    	executeCommand("soffice "+files[row].getAbsolutePath());
+                	    }
+                	}
+
+                }
+            }
+        });
+        
         
         scroll.setViewportView(tableSalida);
 
@@ -392,7 +454,18 @@ public class MainView extends javax.swing.JFrame {
         // TODO add your handling code here:
     
     
-       JFileChooser file=new JFileChooser();
+       //JFileChooser file=new JFileChooser();
+    	file = new JFileChooser();
+       //FileNameExtensionFilter filter = new FileNameExtensionFilter("PDF & DOC & DOCX Files", "pdf", "docx","doc");
+       FileNameExtensionFilter filter1 = new FileNameExtensionFilter("PDF","pdf");
+       FileNameExtensionFilter filter2 = new FileNameExtensionFilter("DOCX, DOC","docx","doc");
+       //FileNameExtensionFilter filter3 = new FileNameExtensionFilter("DOC","doc");
+       
+       file.setFileFilter(filter1);       
+       file.setFileFilter(filter2);
+       
+       
+       
        file.setMultiSelectionEnabled(true);
 	   file.showOpenDialog(null);
 	   
@@ -413,6 +486,9 @@ public class MainView extends javax.swing.JFrame {
 	   for (File file2 : abrir) {
 		   Object[] data = new Object[4];
 		   data[0]=file2.getName();
+		   data[1]="";
+		   
+		   
 		   model.addRow(data);
 	   }
 	   
@@ -440,13 +516,124 @@ public class MainView extends javax.swing.JFrame {
     	
     }//GEN-LAST:event_btnGuardarEnActionPerformed
 
-    private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcesarActionPerformed
+    private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) throws SQLException, IOException {//GEN-FIRST:event_btnProcesarActionPerformed
         // TODO add your handling code here:
     	if(lblInstitucion.getText().equals("") || lblInstitucion.getText().equals("")
     			|| lblIdioma.getText().equals("") || lblTipo.getText().equals("")){
     		
     	JOptionPane.showMessageDialog(null, "Una de las opciones generales está vacio");
+    		return;
     	}
+    	if(jTextField1.getText().equals("")){
+    		JOptionPane.showMessageDialog(null, "No se especificó la ruta donde guardar la metadata");
+    		return;
+    	}
+    	
+    	jProgressBar1.setValue(0);
+    	
+    	listMetaData.clear();
+    	
+    	
+    	File[] listOfFiles= file.getSelectedFiles();
+    	int count =0;
+    	
+    	
+    	for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		    	
+		    	if(file.getName().substring(file.getName().length() -1).equals("x")){ //is a docx
+		    	    try {
+		    	        XWPFDocument doc = new XWPFDocument(new FileInputStream(file));
+		    	        alg = new AlgorithmsWord(doc.getParagraphs());
+		    	    } catch (IOException e) {
+		    	        e.printStackTrace();
+		    	    }
+		    	} else { //is not a docx
+		    	     try {
+		    	         HWPFDocument doc = new HWPFDocument(new FileInputStream(file));
+		    	         Range r = doc.getRange();
+		    	         alg = new AlgorithmsWord(r);
+		    	        } catch (IOException e) {
+		    	            e.printStackTrace();
+		    	        }
+		    	}
+		    	
+		    	
+		    	System.out.println(file.getName());
+		    	
+		    	Metadata metadata = new Metadata();
+		    	metadata.setDescription(alg.getDescriptionOptional());
+		    	metadata.setTitle(alg.getTitle());
+		    	metadata.setIssued(alg.getIssued());
+		    	List<String> autor =alg.getCreator();
+		    	String v_autores="";
+		    	String na="";
+		    	if(autor!=null){
+			    	for(int i=0; i<autor.size(); i++){
+			    		String sa=autor.get(i).replaceAll("-", "");
+			    		String saa=sa.replaceAll("\\*", "");
+			    		String saaa=saa.replaceAll("_", "").trim();
+			    		v_autores+=saaa+" //";			    		
+			    	}
+			    	na=v_autores.substring(0, v_autores.length()-2).trim();
+		    	}		    	
+		    	
+		    	
+		    	
+		    	metadata.setAuthor("");
+		    	metadata.setCreator(na);
+		    	metadata.setSubject(alg.getSubject());
+		    	metadata.setAbstract_doc(alg.getAbstract());
+		    	metadata.setPublisher(lblInstitucion.getText());
+		    	metadata.setSource(lblInstitucion.getText()+" - "+lblSiglas.getText());
+				metadata.setType(lblTipo.getText());
+				metadata.setLanguage_iso(lblIdioma.getText());
+				metadata.setOther("");
+				metadata.setEscuela(alg.getSchool());
+				
+				Estadistica stadistic = new Estadistica();
+				stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
+				stadistic.setSizeAutors(metadata.getAuthor().length());
+				stadistic.setSizeEscuela(metadata.getEscuela().length());
+				stadistic.setSizeFacultad(metadata.getDescription().length());
+				stadistic.setSizeKeyWords(metadata.getSubject().length());
+				//stadistic.setSizeSegundaEsp(sSegundaEsp);
+				stadistic.setSizeTitle(metadata.getTitle().length());
+				
+				metadata.setStadistic(stadistic);
+				
+		    	listMetaData.add(metadata);    	
+		    	int val_calculate = (count+1)*100/listOfFiles.length;
+				jProgressBar1.setValue(val_calculate);
+				count++;
+		    	
+		    }
+		  
+		}
+
+    	String name = jTextField1.getText();
+    	
+    	
+		ExcelController excel = new ExcelController(name, "UNSA", listMetaData);
+		
+		String[] lnames = {"Nombre Archivo","Obs. Dudosa","Obs. Critica", "Abrir Archivo"};
+        DefaultTableModel model = new DefaultTableModel(lnames, 0);
+		tableSalida.setModel(model);
+		
+		int contador =0;
+		for (Metadata meta : listMetaData) {
+			   Object[] data = new Object[4];
+			   data[0]=listOfFiles[contador].getName();
+			   
+			   data[1]=meta.getStadistic().getObservationGeneral()? "Observacion":"";
+			   data[2]=meta.getObservacionGeneral()? "Falta":"";
+			   data[3]="abrir";
+			   
+			   model.addRow(data);
+			   contador++;
+		}
+		
+		
     	
     	btnAbrirMetadata.setEnabled(true);
     	
@@ -454,6 +641,9 @@ public class MainView extends javax.swing.JFrame {
 
     private void btnAbrirMetadataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirMetadataActionPerformed
         // TODO add your handling code here:
+    	
+    	executeCommand("soffice "+jTextField1.getText());
+    	
     }//GEN-LAST:event_btnAbrirMetadataActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
@@ -532,6 +722,30 @@ public class MainView extends javax.swing.JFrame {
             }
         });
     }
+    
+	private String executeCommand(String command) {
+
+		StringBuffer output = new StringBuffer();
+
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader =
+                            new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                        String line = "";
+			while ((line = reader.readLine())!= null) {
+				output.append(line + "\n");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return output.toString();
+
+	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrirMetadata;
@@ -568,6 +782,26 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuSeleccionar;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JTable tableSalida;
+    //private MyJTable tablesalida;
     private javax.swing.JTextField txtArchivos;
     // End of variables declaration//GEN-END:variables
 }
+
+
+
+// 	XWPFDocument docx = new XWPFDocument(new FileInputStream(file));
+//AlgorithmsWord alg = new  AlgorithmsWord(docx.getParagraphs());
+
+//System.out.println("Facultad:  "+alg.getDescription());
+//System.out.println("Escuela: "+alg.getSchool());
+//System.out.println("Titulo: " +alg.getTitle());
+//System.out.println("AÑO: "+alg.getIssued());
+//List<String> autores =alg.getCreator();
+//if(autores!=null){
+//	for(int i=0; i<autores.size(); i++){
+	//	System.out.println("Autor "+i+": "+autores.get(i));
+//	}
+//}
+
+//System.out.println("Palabras clave: " + alg.getSubject());
+//System.out.println("RESUMEN: \n " + alg.getAbstract());

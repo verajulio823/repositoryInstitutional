@@ -53,7 +53,7 @@ public class ExcelController {
 		styleA= wb.createCellStyle();
 		styleR= wb.createCellStyle();
 		XSSFColor colorRojo = new XSSFColor(new java.awt.Color(254,117,20));//254, 0, 0));
-		XSSFColor colorAmarillo = new XSSFColor(new java.awt.Color(254, 254, 0));
+		XSSFColor colorAmarillo = new XSSFColor(new java.awt.Color(236,254,032)); //254, 254, 0));
 		
 		styleA.setFillForegroundColor(colorAmarillo);
 		styleA.setFillPattern(CellStyle.SOLID_FOREGROUND);
@@ -64,62 +64,62 @@ public class ExcelController {
 		{	
 			XSSFRow row = sheet.createRow(i);
 			if(i==0){
-				setRowData(row, 0, "dc.contributor.author");
-				setRowData(row, 1, "dc.creator");
-				setRowData(row, 2, "dc.date.issued");
-				setRowData(row, 3, "dc.description.abstract");
-				setRowData(row, 4, "dc.identifier.other");
-				setRowData(row, 5, "dc.description");
-				setRowData(row, 6, "dc.source");
-				setRowData(row, 7, "dc.title");
-				setRowData(row, 8, "dc.publisher");
-				setRowData(row, 9, "dc.type");
-				setRowData(row, 10,"dc.language.iso");
-				setRowData(row, 11,"dc.subject");
+				setRowData(row, 0, "dc.contributor.author",false);
+				setRowData(row, 1, "dc.creator",false);
+				setRowData(row, 2, "dc.date.issued",false);
+				setRowData(row, 3, "dc.description.abstract",false);
+				setRowData(row, 4, "dc.identifier.other",false);
+				setRowData(row, 5, "dc.description",false);
+				setRowData(row, 6, "dc.source",false);
+				setRowData(row, 7, "dc.title",false);
+				setRowData(row, 8, "dc.publisher",false);
+				setRowData(row, 9, "dc.type",false);
+				setRowData(row, 10,"dc.language.iso",false);
+				setRowData(row, 11,"dc.subject",false);
 				
 			}else{
-				setRowData(row, 0, listMetadata.get(i).getAuthor());
-				setRowData(row, 1, listMetadata.get(i).getCreator());
-				setRowData(row, 2, listMetadata.get(i).getIssued());
-				setRowData(row, 3, listMetadata.get(i).getAbstract_doc());
-				setRowData(row, 4, listMetadata.get(i).getOther());
-				setRowData(row, 5, listMetadata.get(i).getDescription());
-				setRowData(row, 6, listMetadata.get(i).getSource());
-				setRowData(row, 7, listMetadata.get(i).getTitle());
-				setRowData(row, 8, listMetadata.get(i).getPublisher());
-				setRowData(row, 9, listMetadata.get(i).getType());
-				setRowData(row, 10, listMetadata.get(i).getLanguage_iso());
-				setRowData(row, 11, listMetadata.get(i).getSubject());
+				setRowData(row, 0, listMetadata.get(i).getAuthor(),false);
+				setRowData(row, 1, listMetadata.get(i).getCreator(),listMetadata.get(i).getStadistic().getSizeAutors());
+				setRowData(row, 2, listMetadata.get(i).getIssued(),false);
+				setRowData(row, 3, listMetadata.get(i).getAbstract_doc(),listMetadata.get(i).getStadistic().getSizeAbstract());
+				setRowData(row, 4, listMetadata.get(i).getOther(),false);
+				setRowData(row, 5, listMetadata.get(i).getDescription(),listMetadata.get(i).getStadistic().getSizeFacultad());
+				setRowData(row, 6, listMetadata.get(i).getSource(),false);
+				setRowData(row, 7, listMetadata.get(i).getTitle(),listMetadata.get(i).getStadistic().getSizeTitle());
+				setRowData(row, 8, listMetadata.get(i).getPublisher(),false);
+				setRowData(row, 9, listMetadata.get(i).getType(),false);
+				setRowData(row, 10, listMetadata.get(i).getLanguage_iso(),false);
+				setRowData(row, 11, listMetadata.get(i).getSubject(),listMetadata.get(i).getStadistic().getSizeKeyWords());
 			}
-				
-			
-				
-				
 				
 						
 		}
 
 		FileOutputStream fileOut = new FileOutputStream(excelFileName);
-
-		//write this workbook to an Outputstream.
+		
 		wb.write(fileOut);
 		fileOut.flush();
 		fileOut.close();
 	}
 	
 	
-	public void setRowData(XSSFRow row, int index ,String value){
+	public void setRowData(XSSFRow row, int index ,String value, boolean observacion){
 
 		XSSFCell cell = row.createCell(index);	
 		if(value.equals(null) || value.equals("")){
 			if(index==0 || index ==4){
 				cell.setCellValue(value);
 			}else{
-			cell.setCellStyle(styleR);
-			cell.setCellValue(value);
+				cell.setCellStyle(styleR);
+				cell.setCellValue(value);
 			}
 		}else{
-			cell.setCellValue(value);
+			if(observacion){
+				cell.setCellStyle(styleA);
+				cell.setCellValue(value);	
+			}else{
+				cell.setCellValue(value);
+			}
 		}		
 	}
 
