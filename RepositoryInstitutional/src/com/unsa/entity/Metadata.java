@@ -116,5 +116,9 @@ public class Metadata {
 		return abstract_doc.equals("") || title.equals("") || subject.equals("") || creator.equals("") || description.equals("") || issued.equals("")? true:false;
 	}
 	
+	public boolean getFailGeneral(){
+		return abstract_doc.equals("Fail") || title.equals("Fail") || subject.equals("Fail") || creator.equals("Fail") || description.equals("Fail") || issued.equals("Fail")? true:false;
+	}
+	
 
 }

@@ -27,6 +27,7 @@ public class ExcelController {
 	private String nameInstitution;
 	private XSSFCellStyle styleA;
 	private XSSFCellStyle styleR;
+	private XSSFCellStyle styleP;
 	
 	
 	public ExcelController(String nameFile, String nameInstitution, List<Metadata> listMetaData) throws IOException {
@@ -52,18 +53,23 @@ public class ExcelController {
 		XSSFSheet sheet = wb.createSheet(sheetName) ;
 		styleA= wb.createCellStyle();
 		styleR= wb.createCellStyle();
+		styleP= wb.createCellStyle();
 		XSSFColor colorRojo = new XSSFColor(new java.awt.Color(254,117,20));//254, 0, 0));
 		XSSFColor colorAmarillo = new XSSFColor(new java.awt.Color(236,254,032)); //254, 254, 0));
+		XSSFColor colorPlomo = new XSSFColor(new java.awt.Color(160,160,160)); //254, 254, 0));
 		
 		styleA.setFillForegroundColor(colorAmarillo);
 		styleA.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		styleR.setFillForegroundColor(colorRojo);
 		styleR.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleP.setFillForegroundColor(colorPlomo);
+		styleP.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		//iterating r number of rows
-		for (int i=0; i < listMetadata.size(); i++ )
+		//System.out.println("SIZE " + listMetadata.size());
+		for (int i=-1; i < listMetadata.size(); i++ )
 		{	
-			XSSFRow row = sheet.createRow(i);
-			if(i==0){
+			XSSFRow row = sheet.createRow(i+1);
+			if(i==-1){
 				setRowData(row, 0, "dc.contributor.author",false);
 				setRowData(row, 1, "dc.creator",false);
 				setRowData(row, 2, "dc.date.issued",false);
@@ -114,11 +120,17 @@ public class ExcelController {
 				cell.setCellValue(value);
 			}
 		}else{
-			if(observacion){
-				cell.setCellStyle(styleA);
-				cell.setCellValue(value);	
-			}else{
+			if(value.equals("Fail")){
+				cell.setCellStyle(styleP);
 				cell.setCellValue(value);
+			}else{
+			
+				if(observacion){
+					cell.setCellStyle(styleA);
+					cell.setCellValue(value);	
+				}else{
+					cell.setCellValue(value);
+				}
 			}
 		}		
 	}

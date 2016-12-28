@@ -249,7 +249,8 @@ public class MainView extends javax.swing.JFrame {
                 				tableSalida.getModel().getValueAt(row, 0)+" ?", "Abrir", JOptionPane.YES_NO_OPTION);
                 	    if (reply == JOptionPane.YES_OPTION)
                 	    {
-                	    	executeCommand("soffice "+files[row].getAbsolutePath());
+                	    	System.out.println(files[row].getAbsolutePath());
+                	    	executeCommand("soffice "+"\""+files[row].getAbsolutePath()+"\"");
                 	    }
                 	}
 
@@ -475,7 +476,6 @@ public class MainView extends javax.swing.JFrame {
 		  return;
 	   }
 	   
-	   btnProcesar.setEnabled(true);
 	   
 	   txtArchivos.setText(abrir[0].getParent());
 	   String[] lnames = {"Nombre Archivo","Obs. Dudosa","Obs. Critica", "Abrir Archivo"};
@@ -492,8 +492,15 @@ public class MainView extends javax.swing.JFrame {
 		   model.addRow(data);
 	   }
 	   
-
-    
+		if(lblInstitucion.getText().equals("") || lblSiglas.getText().equals("") || 
+				lblTipo.getText().equals("") || lblIdioma.getText().equals("")){
+			   btnProcesar.setEnabled(false);
+		}else{
+			   btnProcesar.setEnabled(true);
+		}
+	   
+	
+	   
     	
     }//GEN-LAST:event_btnSeleccionarActionPerformed
 
@@ -538,18 +545,22 @@ public class MainView extends javax.swing.JFrame {
     	int count =0;
     	
     	
+    	
+    	
     	for (File file : listOfFiles) {
+    		boolean archivo_daniado= false;
 		    if (file.isFile()) {
 		    	System.out.println(file.getName());		    	
 		    	if(file.getName().substring(file.getName().length() -1).equals("x")){ //is a docx
 		    	    try {
-		    	    	//System.out.println(file.getName()+" DOCX");
+		    	    	
 		    	        XWPFDocument doc = new XWPFDocument(new FileInputStream(file));
 		    	        
 		    	        alg = new AlgorithmsWord(doc.getParagraphs());
 		    	        
-		    	    } catch (IOException e) {
-		    	        e.printStackTrace();
+		    	    } catch (Exception e) {
+		    	        //e.printStackTrace();
+		    	    	archivo_daniado=true;
 		    	    }
 		    	} else { //is not a docx
 		    	     try {
@@ -560,61 +571,23 @@ public class MainView extends javax.swing.JFrame {
 		    	         alg = new AlgorithmsWord(r);
 		    	         
 		    	        } catch (Exception e) {
-		    	            //e.printStackTrace();
-		    	        	 XWPFDocument doc = new XWPFDocument(new FileInputStream(file));				    	        
-				    	     alg = new AlgorithmsWord(doc.getParagraphs());
+		    	            
+		    	        	try{
+		    	        	    XWPFDocument doc = new XWPFDocument(new FileInputStream(file));				    	        
+				    	        alg = new AlgorithmsWord(doc.getParagraphs());
+		    	        	}catch(Exception ex){
+		    	        		archivo_daniado=true;		
+		    	        	}
 		    	        }
 		    	}
 		    	
+		    	Metadata metadata=null;
+		    	if(archivo_daniado==true){
+		    		metadata=loadMetadataFail();
+		    	}else{
+		    		metadata=loadMetadata(alg);
+		    	}
 		    	
-		    	
-
-		    	Metadata metadata = new Metadata();
-		    	metadata.setDescription(alg.getDescriptionOptional());
-		    	metadata.setTitle(alg.getTitle());
-		    	metadata.setIssued(alg.getIssued());
-		    	List<String> autor =alg.getCreator();
-		    	String v_autores="";
-		    	String na="";
-		    	if(autor!=null){
-			    	for(int i=0; i<autor.size(); i++){
-			    		String sa=autor.get(i).replaceAll("-", "");
-			    		String saa=sa.replaceAll("\\*", "");
-			    		String saaa=saa.replaceAll("_", "").trim();
-			    		v_autores+=saaa+" //";			    		
-			    	}
-			    	if(!v_autores.equals("")){
-			    		if(v_autores.length()>3){
-			    			na=v_autores.substring(0, v_autores.length()-2).trim();	
-			    		}			    		
-			    	}
-			    	
-		    	}		    	
-		    	
-		    	
-		    	
-		    	metadata.setAuthor("");
-		    	metadata.setCreator(na);
-		    	metadata.setSubject(alg.getSubject());
-		    	metadata.setAbstract_doc(alg.getAbstract());
-		    	metadata.setPublisher(lblInstitucion.getText());
-		    	metadata.setSource(lblInstitucion.getText()+" - "+lblSiglas.getText());
-				metadata.setType(lblTipo.getText());
-				metadata.setLanguage_iso(lblIdioma.getText());
-				metadata.setOther("");
-				metadata.setEscuela(alg.getSchool());
-				
-				Estadistica stadistic = new Estadistica();
-				stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
-				stadistic.setSizeAutors(metadata.getAuthor().length());
-				stadistic.setSizeEscuela(metadata.getEscuela().length());
-				stadistic.setSizeFacultad(metadata.getDescription().length());
-				stadistic.setSizeKeyWords(metadata.getSubject().length());
-				//stadistic.setSizeSegundaEsp(sSegundaEsp);
-				stadistic.setSizeTitle(metadata.getTitle().length());
-				
-				metadata.setStadistic(stadistic);
-				
 		    	listMetaData.add(metadata);    	
 		    	int val_calculate = (count+1)*100/listOfFiles.length;
 				jProgressBar1.setValue(val_calculate);
@@ -638,8 +611,13 @@ public class MainView extends javax.swing.JFrame {
 			   Object[] data = new Object[4];
 			   data[0]=listOfFiles[contador].getName();
 			   
-			   data[1]=meta.getStadistic().getObservationGeneral()? "Observacion":"";
-			   data[2]=meta.getObservacionGeneral()? "Falta":"";
+			   if(meta.getFailGeneral()){
+				   data[1]="Fail";
+				   data[2]="Fail";
+			   }else{			   
+				   data[1]=meta.getStadistic().getObservationGeneral()? "Observacion":"";
+				   data[2]=meta.getObservacionGeneral()? "Falta":"";
+			   }
 			   data[3]="abrir";
 			   
 			   model.addRow(data);
@@ -651,6 +629,86 @@ public class MainView extends javax.swing.JFrame {
     	btnAbrirMetadata.setEnabled(true);
     	
     }//GEN-LAST:event_btnProcesarActionPerformed
+    
+    private Metadata loadMetadataFail(){
+    	Metadata metadata = new Metadata();
+    	metadata.setDescription("Fail");
+    	metadata.setTitle("Fail");
+    	metadata.setIssued("Fail");
+    	
+    	metadata.setAuthor("Fail");
+    	metadata.setCreator("Fail");
+    	metadata.setSubject("Fail");
+    	metadata.setAbstract_doc("Fail");
+    	metadata.setPublisher("Fail");
+    	metadata.setSource("Fail");
+		metadata.setType("Fail");
+		metadata.setLanguage_iso("Fail");
+		metadata.setOther("Fail");
+		metadata.setEscuela("Fail");
+		
+		Estadistica stadistic = new Estadistica();
+		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
+		stadistic.setSizeAutors(metadata.getAuthor().length());
+		stadistic.setSizeEscuela(metadata.getEscuela().length());
+		stadistic.setSizeFacultad(metadata.getDescription().length());
+		stadistic.setSizeKeyWords(metadata.getSubject().length());
+		//stadistic.setSizeSegundaEsp(sSegundaEsp);
+		stadistic.setSizeTitle(metadata.getTitle().length());
+		
+		metadata.setStadistic(stadistic);
+    	
+    	return metadata;
+    }
+    
+    private Metadata loadMetadata(AlgorithmsWord alg){
+    	Metadata metadata = new Metadata();
+    	metadata.setDescription(alg.getDescriptionOptional());
+    	metadata.setTitle(alg.getTitle());
+    	metadata.setIssued(alg.getIssued());
+    	List<String> autor =alg.getCreator();
+    	String v_autores="";
+    	String na="";
+    	if(autor!=null){
+	    	for(int i=0; i<autor.size(); i++){
+	    		String sa=autor.get(i).replaceAll("-", "");
+	    		String saa=sa.replaceAll("\\*", "");
+	    		String saaa=saa.replaceAll("_", "").trim();
+	    		v_autores+=saaa+" //";			    		
+	    	}
+	    	if(!v_autores.equals("")){
+	    		if(v_autores.length()>3){
+	    			na=v_autores.substring(0, v_autores.length()-2).trim();	
+	    		}			    		
+	    	}
+	    	
+    	}		    	
+    	
+    	
+    	
+    	metadata.setAuthor("");
+    	metadata.setCreator(na);
+    	metadata.setSubject(alg.getSubject());
+    	metadata.setAbstract_doc(alg.getAbstract());
+    	metadata.setPublisher(lblInstitucion.getText());
+    	metadata.setSource(lblInstitucion.getText()+" - "+lblSiglas.getText());
+		metadata.setType(lblTipo.getText());
+		metadata.setLanguage_iso(lblIdioma.getText());
+		metadata.setOther("");
+		metadata.setEscuela(alg.getSchool());
+		
+		Estadistica stadistic = new Estadistica();
+		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
+		stadistic.setSizeAutors(metadata.getAuthor().length());
+		stadistic.setSizeEscuela(metadata.getEscuela().length());
+		stadistic.setSizeFacultad(metadata.getDescription().length());
+		stadistic.setSizeKeyWords(metadata.getSubject().length());
+		//stadistic.setSizeSegundaEsp(sSegundaEsp);
+		stadistic.setSizeTitle(metadata.getTitle().length());
+		
+		metadata.setStadistic(stadistic);
+    	return metadata;
+    }
 
     private void btnAbrirMetadataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirMetadataActionPerformed
         // TODO add your handling code here:
@@ -680,6 +738,7 @@ public class MainView extends javax.swing.JFrame {
     		lblIdioma.setEditable(false);
     		lblTipo.setEditable(false);
     		JOptionPane.showMessageDialog(null, "Cambios Guardados");
+    		btnProcesar.setEnabled(true);
     	}else{
     		JOptionPane.showMessageDialog(null, "Una de las opciones generales está vacio");
     	}

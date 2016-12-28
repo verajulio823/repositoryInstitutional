@@ -23,6 +23,7 @@ public class Estadistica {
 	public boolean getSizeTitle() {
 		return sizeTitle;
 	}
+	
 	public void setSizeTitle(int sTitle) {
 		if(sTitle>NUMC_DEFAULT_TITLE || sTitle< 15){
 			sizeTitle =true;
@@ -30,6 +31,7 @@ public class Estadistica {
 			sizeTitle = false;
 		}
 	}
+	
 	public boolean getSizeAutors() {
 		return sizeAutors;
 	}
