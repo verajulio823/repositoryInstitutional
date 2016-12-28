@@ -212,11 +212,19 @@ public class AlgorithmsWord {
 	
 	public String getDescriptionOptional(){
 		String valor;
+		String valor_final;
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
 			int index=paragraphs.get(i).getText().toLowerCase().indexOf("facultad");
 			if(index!=-1){
 				valor=paragraphs.get(i).getText().substring(index,paragraphs.get(i).getText().length()).trim();
-				return valor;				
+				int index_school = valor.toLowerCase().indexOf("escuela");
+				if(index_school!=-1){
+					valor_final=valor.substring(0, index_school);
+				}else{
+					valor_final=valor.substring(0, valor.length());	
+				}
+				
+				return valor_final;				
 			}
 		}
 		return "";		

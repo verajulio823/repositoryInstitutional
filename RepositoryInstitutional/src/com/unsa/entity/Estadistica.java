@@ -24,7 +24,7 @@ public class Estadistica {
 		return sizeTitle;
 	}
 	public void setSizeTitle(int sTitle) {
-		if(sTitle>NUMC_DEFAULT_TITLE){
+		if(sTitle>NUMC_DEFAULT_TITLE || sTitle< 15){
 			sizeTitle =true;
 		}else{
 			sizeTitle = false;
