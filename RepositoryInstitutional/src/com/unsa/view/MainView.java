@@ -540,27 +540,35 @@ public class MainView extends javax.swing.JFrame {
     	
     	for (File file : listOfFiles) {
 		    if (file.isFile()) {
-		    	
+		    	System.out.println(file.getName());		    	
 		    	if(file.getName().substring(file.getName().length() -1).equals("x")){ //is a docx
 		    	    try {
+		    	    	//System.out.println(file.getName()+" DOCX");
 		    	        XWPFDocument doc = new XWPFDocument(new FileInputStream(file));
+		    	        
 		    	        alg = new AlgorithmsWord(doc.getParagraphs());
+		    	        
 		    	    } catch (IOException e) {
 		    	        e.printStackTrace();
 		    	    }
 		    	} else { //is not a docx
 		    	     try {
+		    	    	 
 		    	         HWPFDocument doc = new HWPFDocument(new FileInputStream(file));
+		    	    
 		    	         Range r = doc.getRange();
 		    	         alg = new AlgorithmsWord(r);
-		    	        } catch (IOException e) {
-		    	            e.printStackTrace();
+		    	         
+		    	        } catch (Exception e) {
+		    	            //e.printStackTrace();
+		    	        	 XWPFDocument doc = new XWPFDocument(new FileInputStream(file));				    	        
+				    	     alg = new AlgorithmsWord(doc.getParagraphs());
 		    	        }
 		    	}
 		    	
 		    	
-		    	System.out.println(file.getName());
 		    	
+
 		    	Metadata metadata = new Metadata();
 		    	metadata.setDescription(alg.getDescriptionOptional());
 		    	metadata.setTitle(alg.getTitle());

@@ -243,6 +243,10 @@ public class AlgorithmsWord {
 	public String getAbstract(){
 		String[] rules ={"resumen","sumario"};
 		int pages = NUM_PARRAFO_PROMEDIO*NUM_PAGE_DEFAULT;
+		int total_para=paragraphs.size();
+		if(pages> total_para){
+			pages = total_para-1;
+		}
 		boolean titulo_indice= false;
 		String valor_parrafo="";
 		int line_white=0;
@@ -316,6 +320,11 @@ public class AlgorithmsWord {
 		int ind_flag=0;
 		String palabras_claves="";
 		int pages = NUM_PARRAFO_PROMEDIO*NUM_PAGE_DEFAULT;
+		int total_para=paragraphs.size();
+		if(pages> total_para){
+			pages = total_para-1;
+		}
+		
 		for(int i=0; i<pages; i++)  {
 			for(int j=0; j<rules.length; j++){
 				int index = paragraphs.get(i).getText().toLowerCase().indexOf(rules[j]);
