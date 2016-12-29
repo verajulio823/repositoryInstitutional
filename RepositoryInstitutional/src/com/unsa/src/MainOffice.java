@@ -32,9 +32,16 @@ public class MainOffice {
 		//MainOffice command = new MainOffice();
 		//String comando = "soffice /home/pc-vera/Documentos/Arequipa.docx";
 		//command.executeCommand(comando);
+		String temp = "hola  mjndo  y vale verga la vida";
+		
+		String tempTitle = temp.substring(0,1).toUpperCase()+temp.substring(1,temp.length());
+		System.out.println(tempTitle);
+		
+		
 		AlgorithmsWord alg = null;
 		ConnectionManager.GetConnection();
 		
+		System.out.println("hola".charAt("hola".length()-1));
 		List<Metadata> listMetaData = new ArrayList<Metadata>();
 		
 		String pathComplete = "/home/pc-vera/Documentos/OCRUNSA/ocr-word/";

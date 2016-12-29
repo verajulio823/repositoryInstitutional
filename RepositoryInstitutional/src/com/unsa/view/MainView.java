@@ -8,12 +8,15 @@ package com.unsa.view;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -522,7 +528,7 @@ public class MainView extends javax.swing.JFrame {
     	
     	
     }//GEN-LAST:event_btnGuardarEnActionPerformed
-
+    
     private void btnProcesarActionPerformed(java.awt.event.ActionEvent evt) throws SQLException, IOException {//GEN-FIRST:event_btnProcesarActionPerformed
         // TODO add your handling code here:
     	if(lblInstitucion.getText().equals("") || lblInstitucion.getText().equals("")
@@ -537,8 +543,7 @@ public class MainView extends javax.swing.JFrame {
     	}
     	
     	jProgressBar1.setValue(0);
-    	
-    	listMetaData.clear();
+    	jProgressBar1.setStringPainted(true);
     	
     	
     	File[] listOfFiles= file.getSelectedFiles();
@@ -587,8 +592,10 @@ public class MainView extends javax.swing.JFrame {
 		    	}
 		    	metadata.setFileName(file.getName());
 		    	listMetaData.add(metadata);    	
-		    	int val_calculate = (count+1)*100/listOfFiles.length;
+		    	int val_calculate = (count+1)*100/listOfFiles.length;		    	
 				jProgressBar1.setValue(val_calculate);
+		    	
+		    	
 				count++;
 		    	
 		    }
@@ -628,6 +635,10 @@ public class MainView extends javax.swing.JFrame {
     	
     }//GEN-LAST:event_btnProcesarActionPerformed
     
+    public void updateBar(int newValue) {
+        jProgressBar1.setValue(newValue);
+     }
+    
     private Metadata loadMetadataFail(){
     	Metadata metadata = new Metadata();
     	metadata.setDescription("Fail");
@@ -660,9 +671,19 @@ public class MainView extends javax.swing.JFrame {
     }
     
     private Metadata loadMetadata(AlgorithmsWord alg){
+    	
+    	String temp ="";
+    	String tempTitle="";
     	Metadata metadata = new Metadata();
     	metadata.setDescription(alg.getDescriptionOptional());
-    	metadata.setTitle(alg.getTitle());
+    	
+    	temp =alg.getTitle().toLowerCase().trim();
+    	
+    	if(!temp.equals("")){
+    		tempTitle = temp.substring(0,1).toUpperCase()+temp.substring(1,temp.length());	
+    	}
+    	   	
+    	metadata.setTitle(tempTitle);
     	metadata.setIssued(alg.getIssued());
     	List<String> autor =alg.getCreator();
     	String v_autores="";
@@ -672,11 +693,11 @@ public class MainView extends javax.swing.JFrame {
 	    		String sa=autor.get(i).replaceAll("-", "");
 	    		String saa=sa.replaceAll("\\*", "");
 	    		String saaa=saa.replaceAll("_", "").trim();
-	    		v_autores+=saaa+" //";			    		
+	    		v_autores+=saaa+" // ";			    		
 	    	}
 	    	if(!v_autores.equals("")){
 	    		if(v_autores.length()>3){
-	    			na=v_autores.substring(0, v_autores.length()-2).trim();	
+	    			na=v_autores.substring(0, v_autores.length()-3).trim();	
 	    		}			    		
 	    	}
 	    	
@@ -685,7 +706,7 @@ public class MainView extends javax.swing.JFrame {
     	
     	
     	metadata.setAuthor("");
-    	metadata.setCreator(na);
+    	metadata.setCreator(WordUtils.capitalize(na.toLowerCase().trim()));
     	metadata.setSubject(alg.getSubject());
     	metadata.setAbstract_doc(alg.getAbstract());
     	metadata.setPublisher(lblInstitucion.getText());
@@ -852,26 +873,9 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuSeleccionar;
     private javax.swing.JScrollPane scroll;
     private javax.swing.JTable tableSalida;
-    //private MyJTable tablesalida;
+    
     private javax.swing.JTextField txtArchivos;
     // End of variables declaration//GEN-END:variables
+    
+    
 }
-
-
-
-// 	XWPFDocument docx = new XWPFDocument(new FileInputStream(file));
-//AlgorithmsWord alg = new  AlgorithmsWord(docx.getParagraphs());
-
-//System.out.println("Facultad:  "+alg.getDescription());
-//System.out.println("Escuela: "+alg.getSchool());
-//System.out.println("Titulo: " +alg.getTitle());
-//System.out.println("AÑO: "+alg.getIssued());
-//List<String> autores =alg.getCreator();
-//if(autores!=null){
-//	for(int i=0; i<autores.size(); i++){
-	//	System.out.println("Autor "+i+": "+autores.get(i));
-//	}
-//}
-
-//System.out.println("Palabras clave: " + alg.getSubject());
-//System.out.println("RESUMEN: \n " + alg.getAbstract());
