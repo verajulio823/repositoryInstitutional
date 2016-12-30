@@ -114,18 +114,19 @@ public class AlgorithmsWord {
 	}
 	
 	public String getIssued(){
+		String value="";
 		
 		String[] rules = {"2010","2011","2012","2013","2014","2015","2016","2017","2018"};
 		for(int i=posicionParrafo; i<NUM_PARRAFO_PROMEDIO; i++){
 			for(int j=0; j<rules.length; j++){
 				int index = paragraphs.get(i).getText().indexOf(rules[j]);
 				if(index!=-1){
-					return rules[j];
+					value = rules[j];
 				}
 			}			
 		}
 		
-		return "";
+		return value;
 	}
 	
 	public List<String> getCreator(){

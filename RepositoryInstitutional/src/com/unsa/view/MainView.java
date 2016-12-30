@@ -13,8 +13,11 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
@@ -33,10 +36,18 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.poi.hslf.record.Document;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import com.unsa.controller.AlgorithmsWord;
 import com.unsa.controller.ExcelController;
 import com.unsa.entity.Estadistica;
@@ -371,10 +382,17 @@ public class MainView extends javax.swing.JFrame {
         });
         jMenu1.add(menuSeleccionar);
 
-        menuProcesar.setText("Procesar");
+        menuProcesar.setText("Exportar a PDF...");
         menuProcesar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuProcesarActionPerformed(evt);
+                try {
+					menuProcesarActionPerformed(evt);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                
+                
             }
         });
         jMenu1.add(menuProcesar);
@@ -763,9 +781,99 @@ public class MainView extends javax.swing.JFrame {
     	}
     }//GEN-LAST:event_btnGuardarOpcionesActionPerformed
 
-    private void menuProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuProcesarActionPerformed
+    private void menuProcesarActionPerformed(java.awt.event.ActionEvent evt) throws FileNotFoundException {//GEN-FIRST:event_menuProcesarActionPerformed
         // TODO add your handling code here:
+    
+    	if(txtArchivos.getText().equals("")){
+    		return;
+    		
+    	}
+    	
+    	File[] listOfFiles= file.getSelectedFiles();
+    	for (File file : listOfFiles) {
+    		boolean archivo_daniado= false;
+    		
+    		String nameFile =file.getAbsolutePath().substring(0,file.getAbsolutePath().length()-4)+"pdf";
+    		File outFile=new File(nameFile);
+	    	OutputStream out=new FileOutputStream(outFile);
+	    	PdfOptions options= PdfOptions.create().fontEncoding("DOCX");
+	    	//
+	    	//PdfOptions options =PdfOptions.create().fontEncoding("windows-1250");
+	    	
+	    	
+	    	System.out.println(file.getName());	
+		    if (file.isFile()) {
+		    	if(file.getName().substring(file.getName().length() -1).equals("x")){ 
+		    	    try {		    	    	
+		    	        XWPFDocument doc = new XWPFDocument(new FileInputStream(file));
+		    	        PdfConverter.getInstance().convert(doc, out, options);
+		    	        
+		    	    } catch (Exception e) {
+		    	    	archivo_daniado=true;
+		    	    }
+		    	} else { //is not a docx
+		    	     try {
+		    	         //HWPFDocument doc = new HWPFDocument(new FileInputStream(file));
+		    	    	 DocConverterPDF(file);
+		    	         
+		    	        } catch (Exception e) {
+		    	        	try{
+		    	        	    XWPFDocument doc = new XWPFDocument(new FileInputStream(file));
+		    	        	    PdfConverter.getInstance().convert(doc, out, options);
+				        	}catch(Exception ex){
+		    	        		archivo_daniado=true;		
+		    	        	}
+		    	        }
+		    	}
+		    	
+		    	
+		    	
+		    	
+		    }
+		    
+		}
+    	
+    	
+    	
     }//GEN-LAST:event_menuProcesarActionPerformed
+    
+    private void DocConverterPDF(File file1){
+    	NPOIFSFileSystem fs = null;  
+        com.lowagie.text.Document document = new  com.lowagie.text.Document();
+
+        try { 
+        	System.out.println(file1.getAbsolutePath());
+             fs = new NPOIFSFileSystem(new FileInputStream(file1.getAbsolutePath()));  
+             HWPFDocument doc = new HWPFDocument(fs.getRoot());  
+             WordExtractor we = new WordExtractor(doc);  
+             String output = file1.getAbsolutePath().substring(0, file1.getAbsolutePath().length()-3);
+             OutputStream fileout = new FileOutputStream(new File(output+"pdf")); 
+
+             PdfWriter writer = PdfWriter.getInstance(document, fileout);  
+
+             Range range = doc.getRange();
+             document.open();  
+             writer.setPageEmpty(true);  
+             document.newPage();  
+             writer.setPageEmpty(true);  
+
+             String[] paragraphs = we.getParagraphText();  
+             for (int i = 0; i < paragraphs.length; i++) {  
+
+                 org.apache.poi.hwpf.usermodel.Paragraph pr = range.getParagraph(i);
+                 paragraphs[i] = paragraphs[i].replaceAll("\\cM?\r?\n", "");  
+             document.add(new Paragraph(paragraphs[i]));  
+             }  
+             
+         } catch (Exception e) {  
+               
+             e.printStackTrace();  
+         } finally {  
+                         
+            document.close();  
+                     }  
+           
+    }
 
     private void menuSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSalirActionPerformed
         // TODO add your handling code here:
