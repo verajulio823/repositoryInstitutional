@@ -749,6 +749,7 @@ public class MainView extends javax.swing.JFrame {
     	metadata.setAuthor("");
     	metadata.setCreator(WordUtils.capitalize(na.toLowerCase().trim()));
     	metadata.setSubject(alg.getSubject());
+    	//System.out.println(metadata.getSubject());
     	metadata.setAbstract_doc(alg.getAbstract());
     	metadata.setPublisher(lblInstitucion.getText());
     	metadata.setSource(lblInstitucion.getText()+" - "+lblSiglas.getText());

@@ -278,7 +278,7 @@ public class AlgorithmsWord {
 				String sparrafo = paragraphs.get(i).getText().toLowerCase();
 				if(index!=-1){
 					if(sparrafo.trim().equals(rules[j])){
-						for(int k=0; k<10; k++){
+						for(int k=0; k<i; k++){
 							String sp =paragraphs.get(i-k).getText().toLowerCase();
 							String spe=removeCharSpecial(sp);
 							int index_indice=spe.indexOf("indice");
@@ -351,15 +351,30 @@ public class AlgorithmsWord {
 				int index = paragraphs.get(i).getText().toLowerCase().indexOf(rules[j]);
 				int ind_s =  index+rules[j].length();
 				if(index!=-1){
+					
+					
 					String sp = paragraphs.get(i).getText().toLowerCase();
-					if(sp.charAt(ind_s)=='s'){
-						ind_flag=ind_s+1;
+					if(sp.trim().indexOf("resumen y palabras clave")!=-1){
+						
 					}else{
-			    		ind_flag=ind_s;
-			    	}
-					for(int k=ind_flag; k<sp.length(); k++){
-						if(sp.charAt(k)!=':'){
-							palabras_claves=palabras_claves+sp.charAt(k);
+					
+						//System.out.println("IND_S_ "+ind_s+" "+sp.length());
+						if(sp.length()<=ind_s){
+							for(int k=i+1; k<i+3; k++){
+								if(!paragraphs.get(k).getText().trim().equals("")){
+									return paragraphs.get(k).getText().trim();
+								}
+							}
+						}
+						if(sp.charAt(ind_s)=='s'){
+							ind_flag=ind_s+1;
+						}else{
+				    		ind_flag=ind_s;
+				    	}
+						for(int k=ind_flag; k<sp.length(); k++){
+							if(sp.charAt(k)!=':'){
+								palabras_claves=palabras_claves+sp.charAt(k);
+							}
 						}
 					}
 					
