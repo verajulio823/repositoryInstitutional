@@ -180,6 +180,7 @@ public class AlgorithmsWord {
 							if(numAutores==2){
 								return autores;
 							}
+							
 							//System.out.println("autorrrrrrrrrrrrrrrrrr "+ paragraphs.get(k).getText());
 							autores.add(paragraphs.get(k).getText());
 							numAutores++;
