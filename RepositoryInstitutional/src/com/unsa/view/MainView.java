@@ -703,6 +703,7 @@ public class MainView extends javax.swing.JFrame {
     	if(!temp.equals("")){
     		tempTitle = temp.substring(0,1).toUpperCase()+temp.substring(1,temp.length());	
     	}
+    	
     	   	
     	metadata.setTitle(tempTitle);
     	metadata.setIssued(alg.getIssued());
