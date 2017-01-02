@@ -32,9 +32,21 @@ public class MainOffice {
 		//MainOffice command = new MainOffice();
 		//String comando = "soffice /home/pc-vera/Documentos/Arequipa.docx";
 		//command.executeCommand(comando);
-		String temp = "hola  mjndo  y vale verga la vida";
+		String temp = "-*asdasd áé asdjk ó ñasd, asda.";
+		String val_final ="";
+		for(int i=0; i<temp.length(); i++)
+		{
+			if(Character.isLetter(temp.charAt(i)) || temp.charAt(i)==' '){
+				val_final+=temp.charAt(i);
+			}
+		}
+		System.out.println("original :"+temp);
+		System.out.println("arreglado:"+val_final);
 		
-		String tempTitle = temp.substring(0,1).toUpperCase()+temp.substring(1,temp.length());
+		System.out.println("t.s.  sebastiana huaquisto bellido".replaceAll("t.s.", ""));
+		
+		
+		String tempTitle = temp.substring(0,temp.length());
 		System.out.println(tempTitle);
 		
 		

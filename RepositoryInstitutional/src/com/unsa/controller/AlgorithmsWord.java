@@ -134,10 +134,12 @@ public class AlgorithmsWord {
 		List<String> autores = new ArrayList<String>();
 		int numAutores=0;
 		//System.out.println("NUMERO PARRAFOOOOOOOOOOOOOOOO: "+posicionParrafo);
-		String[] rulesAuthor = {"tesis" ,"magisteres:", "magisteres", "magister:",
+		String[] rulesAuthor = {"magisteres:", "magisteres", "magister:",
 				"magister", "maestros:", "maestros", "maestro:", "maestro",
 				"autores:", "autores", "autor:", "autor", "bachilleres:",
 				"bachilleres", "bachiller:", "bachiller",
+				"licenciadas :","licenciadas: ", "licenciada :","licenciada:","licenciada",
+				"licenciados :","licenciados:", "licenciado :","licenciado:", "licenciado", 
 				"presentado por el bach:", "presentado por el bach",
 				"presentado por:", "presentado por","presentada por:","presentada por" };
 		String[] rulesAuthor1 = { "para " };
@@ -146,18 +148,35 @@ public class AlgorithmsWord {
 				int index = paragraphs.get(i).getText().toLowerCase().indexOf(rulesAuthor[j]);
 				if(index!=-1){
 				//	System.out.println("ENCONTREEEEEEEEE TESISSSSSSSSSSSS ");
+					int index_final = paragraphs.get(i).getText().toLowerCase().indexOf("para obtener");
+					if(index_final!=-1){
+						String evaluar = paragraphs.get(i).getText().toLowerCase();
+						String val_final =evaluar.substring(index+rulesAuthor[j].length(),index_final).trim();
+						int index_y = val_final.indexOf(" y ");
+						if(index_y!=-1){
+							autores.add(val_final.substring(0,index_y));
+							autores.add(val_final.substring(index_y+3,val_final.length()));
+							return autores;
+						}else{
+							autores.add(val_final);
+							return autores;
+						}
+					}
+					
 					for(int k=i+1; k< paragraphs.size(); k++){
-					//	System.out.println("BUSCNADO AUTORESSSSSSSSSSS");
+						//System.out.println("BUSCNADO AUTORESSSSSSSSSSS");
 						if(!paragraphs.get(k).getText().trim().equals("")){
-						//	System.out.println("ECNCONTREEE AUTORRRRR");
-							if(paragraphs.get(k).getText().toLowerCase().indexOf("para ")!=-1)
+							//System.out.println("ECNCONTREEE AUTORRRRR");
+							if(paragraphs.get(k).getText().toLowerCase().indexOf("para ")!=-1
+									|| paragraphs.get(k).getText().toLowerCase().indexOf("para\t")!=-1
+									|| paragraphs.get(k).getText().toLowerCase().indexOf("director de")!=-1)
 							{
 								return autores;
 							}
 							if(numAutores==2){
 								return autores;
 							}
-//							System.out.println("autorrrrrrrrrrrrrrrrrr "+ paragraphs.get(k).getText());
+							//System.out.println("autorrrrrrrrrrrrrrrrrr "+ paragraphs.get(k).getText());
 							autores.add(paragraphs.get(k).getText());
 							numAutores++;
 							
@@ -217,6 +236,7 @@ public class AlgorithmsWord {
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
 			int index=paragraphs.get(i).getText().toLowerCase().indexOf("facultad");
 			if(index!=-1){
+				//System.out.println("ENCONTRE");
 				valor=paragraphs.get(i).getText().substring(index,paragraphs.get(i).getText().length()).trim();
 				int index_school = valor.toLowerCase().indexOf("escuela");
 				if(index_school!=-1){

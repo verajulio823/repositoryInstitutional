@@ -692,6 +692,9 @@ public class MainView extends javax.swing.JFrame {
     	
     	String temp ="";
     	String tempTitle="";
+    	String[] titulos = {"t.s.","bach. arq.", "bachiller arq.","bachiller","lic.", "la profesora","prof."
+    			,"mag.","ing.","magister","ingeniero","ingeniera","dr.","dra.","doctora","doctor"};
+    	
     	Metadata metadata = new Metadata();
     	metadata.setDescription(alg.getDescriptionOptional());
     	
@@ -708,10 +711,28 @@ public class MainView extends javax.swing.JFrame {
     	String na="";
     	if(autor!=null){
 	    	for(int i=0; i<autor.size(); i++){
-	    		String sa=autor.get(i).replaceAll("-", "");
-	    		String saa=sa.replaceAll("\\*", "");
-	    		String saaa=saa.replaceAll("_", "").trim();
-	    		v_autores+=saaa+" // ";			    		
+	    		String temporal = autor.get(i).toLowerCase().trim();
+	    		String val_final="";
+	    		String result ="";
+	    		
+	    		for(int j=0; j<titulos.length; j++){
+	    			temporal=temporal.replaceAll(titulos[j], "");
+	    		}
+	    		
+	    		//System.out.println("val: "+ val_final);
+	    		val_final=temporal;
+	    		
+	    		
+	    		for(int j=0; j<val_final.length(); j++)
+	    		{
+	    			if(Character.isLetter(val_final.charAt(j)) || val_final.charAt(j)==' '){
+	    				result+=val_final.charAt(j);
+	    			}
+	    		}
+	    		
+	    		
+	    		
+	    		v_autores+=result.trim()+" // ";			    		
 	    	}
 	    	if(!v_autores.equals("")){
 	    		if(v_autores.length()>3){
@@ -721,6 +742,7 @@ public class MainView extends javax.swing.JFrame {
 	    	
     	}		    	
     	
+    	//System.out.println("Autores: "+WordUtils.capitalize(na.toLowerCase().trim()));
     	
     	
     	metadata.setAuthor("");
@@ -736,7 +758,7 @@ public class MainView extends javax.swing.JFrame {
 		
 		Estadistica stadistic = new Estadistica();
 		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
-		stadistic.setSizeAutors(metadata.getAuthor().length());
+		stadistic.setSizeAutors(metadata.getCreator().length());
 		stadistic.setSizeEscuela(metadata.getEscuela().length());
 		stadistic.setSizeFacultad(metadata.getDescription().length());
 		stadistic.setSizeKeyWords(metadata.getSubject().length());
