@@ -151,15 +151,19 @@ public class AlgorithmsWord {
 					int index_final = paragraphs.get(i).getText().toLowerCase().indexOf("para obtener");
 					if(index_final!=-1){
 						String evaluar = paragraphs.get(i).getText().toLowerCase();
-						String val_final =evaluar.substring(index+rulesAuthor[j].length(),index_final).trim();
-						int index_y = val_final.indexOf(" y ");
-						if(index_y!=-1){
-							autores.add(val_final.substring(0,index_y));
-							autores.add(val_final.substring(index_y+3,val_final.length()));
-							return autores;
+						if(index+rulesAuthor[j].length()>index_final){
+							
 						}else{
-							autores.add(val_final);
-							return autores;
+							String val_final =evaluar.substring(index+rulesAuthor[j].length(),index_final).trim();
+							int index_y = val_final.indexOf(" y ");
+							if(index_y!=-1){
+								autores.add(val_final.substring(0,index_y));
+								autores.add(val_final.substring(index_y+3,val_final.length()));
+								return autores;
+							}else{
+								autores.add(val_final);
+								return autores;
+							}
 						}
 					}
 					
