@@ -264,7 +264,10 @@ public class AlgorithmsWord {
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
 			int index=paragraphs.get(i).getText().toLowerCase().indexOf("escuela");
 			if(index!=-1){
-				return paragraphs.get(i).getText();				
+				String text_clear =paragraphs.get(i).getText().toLowerCase();
+				String n_text = text_clear.substring(index, text_clear.length());
+				
+				return clearStringDegreeSchool(n_text);				
 			}
 		}
 		return "";
@@ -350,6 +353,32 @@ public class AlgorithmsWord {
 			
 		}
 		return -1;
+	}
+	
+	public String clearStringDegreeSchool(String s){
+		String[] rules = {" De ", " La ", " Los "," El ", " Y ", " En "};
+		String[] rules_change = {" de ", " la ", " los "," el ", " y ", " en "};
+		s= s.replaceAll("escuela", "");
+		s= s.replaceAll("profesional de", "");
+		s= s.replaceAll("profesional", "");
+		String capitalize =WordUtils.capitalize(s);
+		
+		//capitalize = capitalize.replaceAll("\t", " ");
+		for(int i=0; i<rules.length; i++){
+			capitalize =capitalize.replaceAll(rules[i], rules_change[i]);
+		}
+		
+		capitalize=capitalize.trim();
+		String result ="";
+		for(int i=0; i<capitalize.length(); i++){
+			if(Character.isLetter(capitalize.charAt(i)) || capitalize.charAt(i) ==' '){
+				result+=capitalize.charAt(i);
+			}
+		}
+		
+		
+		
+		return result.trim();
 	}
 	
 	public String clearStringDegree(String s){

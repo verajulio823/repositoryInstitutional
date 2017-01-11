@@ -765,7 +765,7 @@ public class MainView extends javax.swing.JFrame {
 		metadata.setDegreeName(alg.getDegreeName());
 		
 		
-	//	System.out.println(metadata.getDegreeName());
+		System.out.println(metadata.getEscuela());
 		
 		
 		Estadistica stadistic = new Estadistica();
