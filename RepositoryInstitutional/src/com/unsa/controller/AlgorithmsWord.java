@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 
+
+import org.apache.commons.lang3.text.WordUtils;
 //import org.apache.lucene.util.automaton.SortedIntSet.FrozenIntSet;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -198,6 +200,8 @@ public class AlgorithmsWord {
 	}
 	
 	public String getAuthor(){
+		
+		
 		return null;
 	}
 	
@@ -264,6 +268,108 @@ public class AlgorithmsWord {
 			}
 		}
 		return "";
+	}
+	
+	
+	public String getSegundaEspecialidad(){
+		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
+			int index=paragraphs.get(i).getText().toLowerCase().indexOf("segunda especialidad");
+			if(index!=-1){
+				return "Segunda Especialidad";				
+			}
+		}
+		return "";
+	}
+	
+	public String getDegreeName(){
+		String[] rules ={"titulo profesional de","grado academico de", "titulo de la","titulo de"};
+		
+		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
+			for(int j=0; j<rules.length; j++){
+				String texto_clear = removeCharSpecial(paragraphs.get(i).getText().toLowerCase().trim());
+				int index = texto_clear.indexOf(rules[j]);
+				if(index!=-1){
+					int index_final = texto_clear.length();
+					int index_inicial = index+rules[j].length()+3; 
+					if(index_final>=index_inicial){							
+						return clearStringDegree(paragraphs.get(i).getText().toLowerCase().substring(index+ rules[j].length(), index_final)); 
+					}else{
+						return clearStringDegree(paragraphs.get(i+1).getText().toLowerCase());
+					}
+					
+				}
+			}
+			
+		}
+		
+		String unico="";
+		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
+			unico+= " "+paragraphs.get(i).getText();
+		}
+		
+		unico= unico.replaceAll("\n", "");
+		unico= unico.replaceAll("\t", "");
+		
+		unico=unico.trim();
+		
+		//System.out.println(unico);
+		for(int j=0; j<rules.length; j++){
+			int index =unico.indexOf(rules[j]);
+		//	System.out.println("ENTREEE ACAAAA"+ index);
+			if(index!=-1){
+				int index_final =indexDifuse(unico);
+				if(index_final !=-1){
+					if(index_final>index){
+						return clearStringDegree(unico.toLowerCase().substring(index+rules[j].length(), index_final));
+					}
+					
+				}
+			}
+			 
+		}
+		
+		
+		return "";
+	}
+	
+	public int indexDifuse(String a){
+		a=a.trim();
+		
+		a=removeCharSpecial(a);
+		
+		String[] rules = {" - peru","- peru"," -peru","-peru"};
+		for(int i=0; i<rules.length; i++){
+			int index = a.indexOf(rules[i]);
+			if(index!=-1){
+				for(int j=index-1; j>0; j--){
+					if(a.charAt(j)==' '){
+						return j;
+					}
+				}
+			}
+			
+		}
+		return -1;
+	}
+	
+	public String clearStringDegree(String s){
+		String[] rules = {" De ", " La ", " Los "," El ", " Y ", " En "};
+		String[] rules_change = {" de ", " la ", " los "," el ", " y ", " en "};
+		String capitalize =WordUtils.capitalize(s);
+		//capitalize = capitalize.replaceAll("\t", " ");
+		for(int i=0; i<rules.length; i++){
+			capitalize =capitalize.replaceAll(rules[i], rules_change[i]);
+		}
+		
+		capitalize=capitalize.trim();
+		String result ="";
+		for(int i=0; i<capitalize.length(); i++){
+			if(Character.isLetter(capitalize.charAt(i)) || capitalize.charAt(i) ==' '){
+				result+=capitalize.charAt(i);
+			}
+		}
+		
+		return result.trim();
 	}
 	
 	public String getAbstract(){

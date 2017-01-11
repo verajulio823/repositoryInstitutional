@@ -18,6 +18,7 @@ public class Estadistica {
 	private boolean sizeFacultad;
 	private boolean sizeEscuela;
 	private boolean sizeSegundaEsp;
+	private boolean sizeDegreeName;
 	
 	
 	public boolean getSizeTitle() {
@@ -97,6 +98,21 @@ public class Estadistica {
 	public boolean getObservationGeneral(){
 		return sizeAbstract || sizeAutors || sizeFacultad || sizeKeyWords || sizeTitle ? true:false;
 	}
+
+	public boolean getSizeDegreeName() {
+		return sizeDegreeName;
+	}
+
+	public void setSizeDegreeName(int sDegreeName) {
+		if(sDegreeName < 3){
+			sizeDegreeName = true;
+		}else{
+			sizeDegreeName = false;
+		}
+				
+	}
+	
+	
 
 	
 }

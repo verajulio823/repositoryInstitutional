@@ -673,6 +673,9 @@ public class MainView extends javax.swing.JFrame {
 		metadata.setLanguage_iso("Fail");
 		metadata.setOther("Fail");
 		metadata.setEscuela("Fail");
+		metadata.setSegundaEspecialidad("Fail");
+		metadata.setDegreeName("Fail");
+		
 		
 		Estadistica stadistic = new Estadistica();
 		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
@@ -682,6 +685,7 @@ public class MainView extends javax.swing.JFrame {
 		stadistic.setSizeKeyWords(metadata.getSubject().length());
 		//stadistic.setSizeSegundaEsp(sSegundaEsp);
 		stadistic.setSizeTitle(metadata.getTitle().length());
+		
 		
 		metadata.setStadistic(stadistic);
     	
@@ -757,6 +761,12 @@ public class MainView extends javax.swing.JFrame {
 		metadata.setLanguage_iso(lblIdioma.getText());
 		metadata.setOther("");
 		metadata.setEscuela(alg.getSchool());
+		metadata.setSegundaEspecialidad(alg.getSegundaEspecialidad());
+		metadata.setDegreeName(alg.getDegreeName());
+		
+		
+	//	System.out.println(metadata.getDegreeName());
+		
 		
 		Estadistica stadistic = new Estadistica();
 		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
@@ -766,6 +776,14 @@ public class MainView extends javax.swing.JFrame {
 		stadistic.setSizeKeyWords(metadata.getSubject().length());
 		//stadistic.setSizeSegundaEsp(sSegundaEsp);
 		stadistic.setSizeTitle(metadata.getTitle().length());
+		
+		String[] dn = metadata.getDegreeName().split(" ");
+		if(dn.length!=0){
+			stadistic.setSizeDegreeName(dn.length);	
+		}else{
+			stadistic.setSizeDegreeName(0);
+		}
+		
 		
 		metadata.setStadistic(stadistic);
     	return metadata;

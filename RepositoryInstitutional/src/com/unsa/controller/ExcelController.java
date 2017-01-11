@@ -83,6 +83,8 @@ public class ExcelController {
 				setRowData(row, 10, "dc.type",false);
 				setRowData(row, 11,"dc.language.iso",false);
 				setRowData(row, 12,"dc.subject",false);
+				setRowData(row, 13,"dc.segundaEspecialidad",false);
+				setRowData(row, 14,"thesis.degree.name",false);
 				
 			}else{
 				setRowData(row, 0, listMetadata.get(i).getFileName(),false);
@@ -98,6 +100,8 @@ public class ExcelController {
 				setRowData(row, 10, listMetadata.get(i).getType(),false);
 				setRowData(row, 11, listMetadata.get(i).getLanguage_iso(),false);
 				setRowData(row, 12, listMetadata.get(i).getSubject(),listMetadata.get(i).getStadistic().getSizeKeyWords());
+				setRowData(row, 13, listMetadata.get(i).getSegundaEspecialidad(),false);
+				setRowData(row, 14, listMetadata.get(i).getDegreeName(),listMetadata.get(i).getStadistic().getSizeDegreeName());
 			}
 				
 						

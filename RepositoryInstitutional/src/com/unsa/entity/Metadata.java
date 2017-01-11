@@ -16,6 +16,17 @@ public class Metadata {
 	private String subject;	
 	private String escuela;
 	private String fileName;
+	private String advisor;
+	private String uri_description;
+	//private String uri_identifier;
+	private String uri_rights;
+	private String rights;
+	private String level;
+	private String degreeName;
+	private String grantor;
+	private String discipline;
+	private String segundaEspecialidad;
+	
 	
 	private Estadistica stadistic;
 	
@@ -64,7 +75,7 @@ public class Metadata {
 	}
 	public void setSource(String source) {
 		this.source = source;
-	}
+	}	
 	public String getTitle() {
 		return title;
 	}
@@ -127,6 +138,86 @@ public class Metadata {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	public String getAdvisor() {
+		return advisor;
+	}
+
+	public void setAdvisor(String advisor) {
+		this.advisor = advisor;
+	}
+
+	public String getUri_description() {
+		return uri_description;
+	}
+
+	public void setUri_description(String uri_description) {
+		this.uri_description = uri_description;
+	}
+
+	/*public String getUri_identifier() {
+		return uri_identifier;
+	}
+
+	public void setUri_identifier(String uri_identifier) {
+		this.uri_identifier = uri_identifier;
+	}*/
+
+	public String getUri_rights() {
+		return uri_rights;
+	}
+
+	public void setUri_rights(String uri_rights) {
+		this.uri_rights = uri_rights;
+	}
+
+	public String getRights() {
+		return rights;
+	}
+
+	public void setRights(String rights) {
+		this.rights = rights;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getDegreeName() {
+		return degreeName;
+	}
+
+	public void setDegreeName(String name) {
+		this.degreeName = name;
+	}
+
+	public String getGrantor() {
+		return grantor;
+	}
+
+	public void setGrantor(String grantor) {
+		this.grantor = grantor;
+	}
+
+	public String getDiscipline() {
+		return discipline;
+	}
+
+	public void setDiscipline(String discipline) {
+		this.discipline = discipline;
+	}
+
+	public String getSegundaEspecialidad() {
+		return segundaEspecialidad;
+	}
+
+	public void setSegundaEspecialidad(String segundaEspecialidad) {
+		this.segundaEspecialidad = segundaEspecialidad;
 	}
 	
 	
