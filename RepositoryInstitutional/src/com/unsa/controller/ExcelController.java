@@ -72,38 +72,50 @@ public class ExcelController {
 			if(i==-1){
 				setRowData(row, 0, "Nombre.Archivo",false);
 				setRowData(row, 1, "dc.contributor.author",false);
-				setRowData(row, 2, "dc.creator",false);
-				setRowData(row, 3, "dc.date.issued",false);
-				setRowData(row, 4, "dc.description.abstract",false);
-				setRowData(row, 5, "dc.identifier.other",false);
-				setRowData(row, 6, "dc.description",false);
-				setRowData(row, 7, "dc.source",false);
-				setRowData(row, 8, "dc.title",false);
-				setRowData(row, 9, "dc.publisher",false);
-				setRowData(row, 10, "dc.type",false);
-				setRowData(row, 11,"dc.language.iso",false);
-				setRowData(row, 12,"dc.subject",false);
-				setRowData(row, 13,"dc.segundaEspecialidad",false);
-				setRowData(row, 14,"thesis.degree.name",false);
-				setRowData(row, 14,"thesis.degree.discipline",false);
-				
+				setRowData(row, 2, "dc.contributor.advisor",false);
+				setRowData(row, 3, "dc.creator",false);
+				setRowData(row, 4, "dc.date.issued",false);
+				setRowData(row, 5, "dc.description.abstract",false);
+				setRowData(row, 6, "dc.description.uri",false);
+				setRowData(row, 7, "dc.identifier.uri",false);				
+				setRowData(row, 8, "dc.identifier.other",false);
+				setRowData(row, 9, "dc.description",false);
+				setRowData(row, 10, "dc.language.iso",false);
+				setRowData(row, 11, "dc.publisher",false);
+				setRowData(row, 12, "dc.rights.uri",false);
+				setRowData(row, 13, "dc.rights",false);
+				setRowData(row, 14, "dc.source",false);
+				setRowData(row, 15, "dc.subject",false);
+				setRowData(row, 16, "dc.title",false);
+				setRowData(row, 17,"dc.type",false);
+				setRowData(row, 18,"thesis.degree.level",false);
+				setRowData(row, 19,"thesis.degree.name",false);
+				setRowData(row, 20,"thesis.degree.grantor",false);
+				setRowData(row, 21,"thesis.degree.discipline",false);								
 			}else{
 				setRowData(row, 0, listMetadata.get(i).getFileName(),false);
 				setRowData(row, 1, listMetadata.get(i).getAuthor(),false);
-				setRowData(row, 2, listMetadata.get(i).getCreator(),listMetadata.get(i).getStadistic().getSizeAutors());
-				setRowData(row, 3, listMetadata.get(i).getIssued(),false);
-				setRowData(row, 4, listMetadata.get(i).getAbstract_doc(),listMetadata.get(i).getStadistic().getSizeAbstract());
-				setRowData(row, 5, listMetadata.get(i).getOther(),false);
-				setRowData(row, 6, listMetadata.get(i).getDescription(),listMetadata.get(i).getStadistic().getSizeFacultad());
-				setRowData(row, 7, listMetadata.get(i).getSource(),false);
-				setRowData(row, 8, listMetadata.get(i).getTitle(),listMetadata.get(i).getStadistic().getSizeTitle());
-				setRowData(row, 9, listMetadata.get(i).getPublisher(),false);
-				setRowData(row, 10, listMetadata.get(i).getType(),false);
-				setRowData(row, 11, listMetadata.get(i).getLanguage_iso(),false);
-				setRowData(row, 12, listMetadata.get(i).getSubject(),listMetadata.get(i).getStadistic().getSizeKeyWords());
-				setRowData(row, 13, listMetadata.get(i).getSegundaEspecialidad(),false);
-				setRowData(row, 14, listMetadata.get(i).getDegreeName(),listMetadata.get(i).getStadistic().getSizeDegreeName());
-				setRowData(row, 15, listMetadata.get(i).getEscuela(),listMetadata.get(i).getStadistic().getSizeEscuela());
+				setRowData(row, 2, "",false);
+				setRowData(row, 3, listMetadata.get(i).getCreator(),listMetadata.get(i).getStadistic().getSizeAutors());
+				setRowData(row, 4, listMetadata.get(i).getIssued(),false);
+				setRowData(row, 5, listMetadata.get(i).getAbstract_doc(),listMetadata.get(i).getStadistic().getSizeAbstract());
+				setRowData(row, 6, listMetadata.get(i).getUri_description(),false);
+				setRowData(row, 7, "",false);				
+				setRowData(row, 8, listMetadata.get(i).getOther(),false);
+				setRowData(row, 9, listMetadata.get(i).getDescription(),listMetadata.get(i).getStadistic().getSizeFacultad());
+				setRowData(row, 10, listMetadata.get(i).getLanguage_iso(),false);
+				setRowData(row, 11, listMetadata.get(i).getPublisher(),false);
+				setRowData(row, 12, listMetadata.get(i).getUri_rights(),false);
+				setRowData(row, 13, listMetadata.get(i).getRights(),false);				
+				setRowData(row, 14, listMetadata.get(i).getSource(),false);
+				setRowData(row, 15, listMetadata.get(i).getSubject(),listMetadata.get(i).getStadistic().getSizeKeyWords());
+				setRowData(row, 16, listMetadata.get(i).getTitle(),listMetadata.get(i).getStadistic().getSizeTitle());				
+				setRowData(row, 17, listMetadata.get(i).getType(),false);
+				setRowData(row, 18, listMetadata.get(i).getDegreeLevel(),false);
+				setRowData(row, 19, listMetadata.get(i).getDegreeName(),listMetadata.get(i).getStadistic().getSizeDegreeName());
+				setRowData(row, 20, listMetadata.get(i).getGrantor(),listMetadata.get(i).getStadistic().getSizeDegreeName());
+				setRowData(row, 21, listMetadata.get(i).getEscuela(),listMetadata.get(i).getStadistic().getSizeEscuela());
+				
 			}
 				
 						

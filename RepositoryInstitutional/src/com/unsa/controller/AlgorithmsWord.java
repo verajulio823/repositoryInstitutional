@@ -27,7 +27,9 @@ public class AlgorithmsWord {
 	int NUM_PARRAFO_PROMEDIO=35;
 	int NUM_INICIO_TESIS=15;
 	int NUM_PAGE_DEFAULT= 17;
-	
+	String tempTitle="";
+	String uriDescription="";
+	private String sTitle;
 	
 	public AlgorithmsWord(List<XWPFParagraph> paragraphs) {
 		// TODO Auto-generated constructor stub
@@ -52,6 +54,62 @@ public class AlgorithmsWord {
 	}
 
 
+	public String getTitle2(){
+		
+		String s_t = "";
+		boolean flag = false;
+		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
+			String s = paragraphs.get(i).getText().toLowerCase().trim();
+			s= s.replace("  ", " ");
+			if(verifyOrganization(s)==false){
+				//System.out.println(i+": "+paragraphs.get(i).getText().toLowerCase().trim());
+				if(verifyRuleTesis(s)){
+					posicionParrafo =i;
+					if(!s_t.equals("")){
+						tempTitle=verifyTitle(s_t);
+						return tempTitle; 	
+					}
+					
+				}else{
+					s_t += paragraphs.get(i).getText().toLowerCase().trim();
+					
+				}				
+			}		
+		}
+		
+		return "";
+	}
+	
+	public boolean verifyOrganization(String s){
+		String[] rulesN = {"universidad nacional","facultad", "escuela", "segunda especialidad", "unidad de segunda"};
+		for(int i=0; i<rulesN.length; i++){
+			if(s.indexOf(rulesN[i])!=-1 || s.equals("")){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean verifyRuleTesis(String s){
+		String[] rulesN = {"tesis presentad","tesina presentad", "trabajo de investigaci", "asesor:", "asesor :", 
+				"magisteres:", "magisteres", "magister:",
+				"magister", "maestros:", "maestros", "maestro:", "maestro",
+				"autores:", "autores", "autor:", "autor", "bachilleres:",
+				"bachilleres", "bachiller:", "bachiller",
+				"licenciadas :","licenciadas: ", "licenciada :","licenciada:","licenciada",
+				"licenciados :","licenciados:", "licenciado :","licenciado:", "licenciado", 
+				"presentado por el bach:", "presentado por el bach",
+				"presentado por:", "presentado por","presentada por:","presentada por"};
+		for(int i=0; i<rulesN.length; i++){
+			if(s.indexOf(rulesN[i])!=-1){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	public String getTitle(){
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
@@ -70,13 +128,17 @@ public class AlgorithmsWord {
 										for(int l=k+1; l<paragraphs.size(); l++){
 											if(!paragraphs.get(l).getText().trim().equals("")){
 												posicionParrafo =l;
-												return paragraphs.get(l).getText();
+												tempTitle =paragraphs.get(l).getText();
+												tempTitle=verifyTitle(tempTitle);
+												return tempTitle;
 											}
 										}
 									}
 									
 									posicionParrafo =k;
-									return paragraphs.get(k).getText();
+									tempTitle=paragraphs.get(k).getText();
+									tempTitle=verifyTitle(tempTitle);
+									return tempTitle;
 								}
 							}
 							
@@ -85,12 +147,16 @@ public class AlgorithmsWord {
 								for(int k=j+1; k<paragraphs.size(); k++){
 									if(!paragraphs.get(k).getText().trim().equals("")){
 										posicionParrafo =k;
-										return paragraphs.get(k).getText();
+										tempTitle=paragraphs.get(k).getText();
+										tempTitle=verifyTitle(tempTitle);
+										return tempTitle;
 									}
 								}
 							}
 							posicionParrafo=j;
-							return paragraphs.get(j).getText();
+							tempTitle=paragraphs.get(j).getText();
+							tempTitle=verifyTitle(tempTitle);
+							return tempTitle;
 						}
 					}
 				}
@@ -98,7 +164,31 @@ public class AlgorithmsWord {
 			}
 			
 		}
+		tempTitle="";
 		return "";
+	}
+	
+	public String verifyTitle(String s){
+		if(s.charAt(0)==34){
+			s=s.substring(1,s.length());
+		}
+		if(s.charAt(s.length()-1)==34){
+			s=s.substring(0,s.length()-1);
+		}
+		if(s.charAt(s.length()-1)=='.'){
+			s=s.substring(0,s.length()-1);
+		}
+		if(s.charAt(0)=='“'){
+			s=s.substring(1,s.length());
+		}
+		if(s.charAt(s.length()-1)=='”'){
+			s=s.substring(0,s.length()-1);
+		}
+		if(s.charAt(s.length()-1)=='.'){
+			s=s.substring(0,s.length()-1);
+		}
+		s=s.trim();
+		return s.substring(0,1).toUpperCase()+s.substring(1,s.length());
 	}
 	
 	public boolean verifySpecialization(String s){
@@ -253,12 +343,22 @@ public class AlgorithmsWord {
 				}else{
 					valor_final=valor.substring(0, valor.length());	
 				}
+				String[] rules = {" De ", " La ", " Los "," El ", " Y ", " En "};
+				String[] rules_change = {" de ", " la ", " los "," el ", " y ", " en "};
+				String capitalize =WordUtils.capitalize(valor_final.toLowerCase());
+				//capitalize = capitalize.replaceAll("\t", " ");
+				for(int k=0; k<rules.length; k++){
+					capitalize =capitalize.replaceAll(rules[k], rules_change[k]);
+				}
 				
-				return valor_final;				
+				capitalize=capitalize.trim();
+				
+				return capitalize;				
 			}
 		}
 		return "";		
 	}
+	
 	
 	public String getSchool(){
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
@@ -278,10 +378,20 @@ public class AlgorithmsWord {
 		for(int i=0; i<NUM_PARRAFO_PROMEDIO; i++){
 			int index=paragraphs.get(i).getText().toLowerCase().indexOf("segunda especialidad");
 			if(index!=-1){
-				return "Segunda Especialidad";				
+				uriDescription="Título de Segunda Especialidad";				
+				return "Título de Segunda Especialidad";				
 			}
 		}
-		return "";
+		uriDescription= "Título Profesional";
+		return "Título Profesional";
+	}
+	
+	public String getUriDescription(){
+		if(uriDescription.equals("Título de Segunda Especialidad")){
+			return "Tesis de segunda especialidad";
+		}else{
+			return "Tesis";
+		}
 	}
 	
 	public String getDegreeName(){
@@ -478,6 +588,7 @@ public class AlgorithmsWord {
 	
 	public String getSubject(){
 		String[] rules ={"palabras clave","palabra clave"};
+	
 		int ind_flag=0;
 		String palabras_claves="";
 		int pages = NUM_PARRAFO_PROMEDIO*NUM_PAGE_DEFAULT;
@@ -502,7 +613,9 @@ public class AlgorithmsWord {
 						if(sp.length()<=ind_s){
 							for(int k=i+1; k<i+3; k++){
 								if(!paragraphs.get(k).getText().trim().equals("")){
-									return paragraphs.get(k).getText().trim();
+									String ss=paragraphs.get(k).getText().replace(":", "");
+									//ss.replace("", newChar)
+									return ss.trim();
 								}
 							}
 						}
@@ -512,7 +625,7 @@ public class AlgorithmsWord {
 				    		ind_flag=ind_s;
 				    	}
 						for(int k=ind_flag; k<sp.length(); k++){
-							if(sp.charAt(k)!=':'){
+							if(sp.charAt(k)!=':' || sp.charAt(k)!='.'){
 								palabras_claves=palabras_claves+sp.charAt(k);
 							}
 						}
@@ -523,8 +636,39 @@ public class AlgorithmsWord {
 			}
 		}
 		
-		return palabras_claves.trim();
+		String temp_w="";
+		int count=0;
+		if(palabras_claves.equals("")){
+			if(!tempTitle.equals("")){
+				String[] lw = tempTitle.split(" ");
+				for(int i=0; i< lw.length; i++){
+					if(lw[i].length()>4 && count !=4){
+						if(count<=2){
+							temp_w+=lw[i].substring(0, 1).toUpperCase()+lw[i].substring(1,lw[i].length()).toLowerCase()+"||";
+							count++;
+						}else{
+							temp_w+=lw[i].substring(0, 1).toUpperCase()+lw[i].substring(1,lw[i].length()).toLowerCase();
+							count++;
+						}
+					}
+				}
+				
+				return temp_w;
+				
+			}
+		}else{
+			palabras_claves=palabras_claves.replace(":", "").replace(".", "").trim();
+			String result_f="";
+			String[] ls = palabras_claves.split(",");
+			for(int i=0; i<ls.length; i++){
+				result_f+=WordUtils.capitalize(ls[i]).trim()+"||";
+			}
+			
+			return result_f.substring(0,result_f.length()-2);
+		}
 		
+		
+		return "";
 	}
 	
 	public boolean verifyKeyWords(String s){

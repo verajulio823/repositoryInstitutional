@@ -25,7 +25,8 @@ public class Metadata {
 	private String degreeName;
 	private String grantor;
 	private String discipline;
-	private String segundaEspecialidad;
+	//private String segundaEspecialidad;
+	private String degreeLevel;
 	
 	
 	private Estadistica stadistic;
@@ -212,12 +213,20 @@ public class Metadata {
 		this.discipline = discipline;
 	}
 
-	public String getSegundaEspecialidad() {
+	/*public String getSegundaEspecialidad() {
 		return segundaEspecialidad;
 	}
 
 	public void setSegundaEspecialidad(String segundaEspecialidad) {
 		this.segundaEspecialidad = segundaEspecialidad;
+	}*/
+
+	public String getDegreeLevel() {
+		return degreeLevel;
+	}
+
+	public void setDegreeLevel(String degreeLevel) {
+		this.degreeLevel = degreeLevel;
 	}
 	
 	
