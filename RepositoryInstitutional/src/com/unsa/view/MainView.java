@@ -669,6 +669,9 @@ public class MainView extends javax.swing.JFrame {
     private Metadata loadMetadataFail(){
     	Metadata metadata = new Metadata();
     	metadata.setDescription("Fail");
+    	
+    	metadata.setGrantor("Fail");
+    	
     	metadata.setTitle("Fail");
     	metadata.setIssued("Fail");
     	
@@ -686,13 +689,19 @@ public class MainView extends javax.swing.JFrame {
 		metadata.setDegreeName("Fail");
 		
 		
+		metadata.setUri_rights("Fail");
+		metadata.setRights("Fail");
+		metadata.setDegreeLevel("Fail");
+		metadata.setUri_description("Fail");
+		
+		
+		
 		Estadistica stadistic = new Estadistica();
 		stadistic.setSizeAbstract(metadata.getAbstract_doc().length());
 		stadistic.setSizeAutors(metadata.getAuthor().length());
 		stadistic.setSizeEscuela(metadata.getEscuela().length());
 		stadistic.setSizeFacultad(metadata.getDescription().length());
 		stadistic.setSizeKeyWords(metadata.getSubject().length());
-		//stadistic.setSizeSegundaEsp(sSegundaEsp);
 		stadistic.setSizeTitle(metadata.getTitle().length());
 		
 		
